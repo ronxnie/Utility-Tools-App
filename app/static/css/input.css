@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .glass-panel {
+    @apply rounded-3xl border border-white/20 bg-white/80 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70;
+  }
+}

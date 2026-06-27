@@ -1,0 +1,39 @@
+services:
+  web:
+    build: .
+    container_name: utilities_tools_web
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=change-me-in-production
+      - SERVICE_MODE=all
+      - MAX_UPLOAD_MB=80
+    volumes:
+      - tool_data:/app/instance
+
+  pdf-service:
+    build: .
+    profiles: ["microservices"]
+    environment:
+      - SERVICE_MODE=pdf
+    volumes:
+      - tool_data:/app/instance
+
+  image-service:
+    build: .
+    profiles: ["microservices"]
+    environment:
+      - SERVICE_MODE=image
+    volumes:
+      - tool_data:/app/instance
+
+  text-dev-calc-service:
+    build: .
+    profiles: ["microservices"]
+    environment:
+      - SERVICE_MODE=utility
+    volumes:
+      - tool_data:/app/instance
+
+volumes:
+  tool_data:

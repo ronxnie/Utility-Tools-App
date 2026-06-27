@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="grid gap-10 py-8 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+  <div class="animate__animated animate__fadeInUp">
+    <div class="mb-5 flex flex-wrap gap-2">
+      <a href="#pdf" class="hero-chip rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-aqua shadow-sm dark:bg-white/10">PDF</a>
+      <a href="#image" class="hero-chip rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-coral shadow-sm dark:bg-white/10">Images</a>
+      <a href="#dev" class="hero-chip rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-ink shadow-sm dark:bg-white/10 dark:text-white">Dev</a>
+      <a href="#calculators" class="hero-chip rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-emerald-600 shadow-sm dark:bg-white/10">Calculators</a>
+      <a href="#productivity" class="hero-chip rounded-full bg-white/80 px-4 py-2 text-sm font-bold text-purple-600 shadow-sm dark:bg-white/10">Productivity</a>
+    </div>
+    <h1 class="max-w-4xl text-4xl font-black leading-tight tracking-normal text-slate-950 dark:text-white sm:text-6xl">
+      All-in-one utility tools for everyday files, text, code, and finance.
+    </h1>
+    <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
+      A vivid, responsive, multi-page Flask application with a search-volume-ready catalog across documents, media, AI, security, social, and productivity tools.
+    </p>
+  </div>
+  <div class="rounded-[2rem] border border-white/30 bg-white/75 p-5 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+    <div class="grid grid-cols-2 gap-3">
+      {% for item in [
+        ("Merge PDFs", "pdf.merge"),
+        ("Compress Images", "image.compress"),
+        ("Format JSON", "dev.json_formatter"),
+        ("Calculate EMI", "calc.emi"),
+        ("Split PDFs", "pdf.split"),
+        ("Generate UUID", "dev.uuid_generator")
+      ] %}
+        <a href="{{ url_for(item[1]) }}" class="rounded-2xl bg-gradient-to-br from-white to-slate-100 p-4 font-bold text-slate-700 shadow-sm transition hover:-translate-y-1 hover:text-aqua dark:from-white/10 dark:to-white/5 dark:text-slate-100">
+          {{ item[0] }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% for category in categories %}
+  {% if category.slug == "productivity" %}
+    <section class="mb-8 rounded-3xl border border-aqua/20 bg-white/85 p-6 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="text-sm font-black uppercase tracking-wide text-aqua">Quick Access</p>
+          <h2 class="text-3xl font-black">{{ category.name }}</h2>
+        </div>
+        <a href="#productivity" class="rounded-full bg-slate-950 px-4 py-2 text-xs font-black uppercase text-white hover:bg-aqua dark:bg-white dark:text-slate-950">View Section</a>
+      </div>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {% for endpoint in category.tools %}
+          <a class="group flex min-h-16 items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold shadow-sm transition hover:-translate-y-1 hover:border-aqua hover:text-aqua dark:border-white/10 dark:bg-white/5" href="{{ url_for('catalog.tool', slug=endpoint.slug) }}">
+            <span>{{ endpoint.name }}</span>
+            <span class="rounded-full bg-slate-950 px-3 py-1 text-[10px] uppercase text-white transition group-hover:bg-aqua dark:bg-white dark:text-slate-950">Open</span>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endfor %}
+
+<section class="grid gap-5 pb-12 md:grid-cols-2 xl:grid-cols-3">
+  {% for category in categories %}
+    <article id="{{ category.slug }}" class="tool-card scroll-mt-24 rounded-3xl border border-white/40 bg-white/80 p-6 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+      <div class="mb-5 h-2 rounded-full bg-gradient-to-r {{ category.accent }} animated-gradient"></div>
+      <h2 class="text-2xl font-black">{{ category.name }}</h2>
+      <p class="mt-2 min-h-14 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ category.description }}</p>
+      <div class="mt-6 grid gap-2">
+        {% for endpoint in category.tools %}
+          <a class="group grid grid-cols-[1fr_auto] items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold hover:border-aqua hover:text-aqua dark:border-white/10 dark:bg-white/5 dark:hover:border-aqua" href="{% if endpoint.endpoint is defined %}{{ url_for(endpoint.endpoint) }}{% else %}{{ url_for('catalog.tool', slug=endpoint.slug) }}{% endif %}">
+            <span class="leading-5">{{ endpoint.name }}</span>
+            <span class="flex items-center gap-2">
+              <span class="hidden rounded-full px-2 py-1 text-[10px] uppercase text-slate-500 dark:bg-white/10 dark:text-slate-300 sm:inline-flex {% if endpoint.implemented is defined and endpoint.implemented %}bg-emerald-50 text-emerald-700{% else %}bg-slate-100{% endif %}">
+                {% if endpoint.implemented is defined and endpoint.implemented %}Ready{% else %}Setup{% endif %}
+              </span>
+              <span class="rounded-full bg-slate-950 px-3 py-1 text-[10px] uppercase text-white transition group-hover:translate-x-1 group-hover:bg-aqua dark:bg-white dark:text-slate-950">Open</span>
+            </span>
+          </a>
+        {% endfor %}
+      </div>
+    </article>
+  {% endfor %}
+</section>
+{% endblock %}

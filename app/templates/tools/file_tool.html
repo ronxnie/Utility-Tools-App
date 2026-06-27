@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="mx-auto max-w-3xl">
+  <div class="mb-6">
+    <a href="{{ url_for('main.index') }}" class="text-sm font-bold text-aqua">← Dashboard</a>
+    <h1 class="mt-3 text-4xl font-black">{{ title }}</h1>
+    <p class="mt-2 text-slate-600 dark:text-slate-300">Upload your file, choose options, and download the processed result.</p>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="rounded-3xl border border-white/40 bg-white/85 p-6 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+    <label class="block text-sm font-black uppercase tracking-wide text-slate-500">Files</label>
+    <input required class="mt-3 block w-full rounded-2xl border border-slate-200 bg-white p-4 text-sm file:mr-4 file:rounded-full file:border-0 file:bg-aqua file:px-4 file:py-2 file:font-bold file:text-white dark:border-white/10 dark:bg-slate-900" type="file" name="files" accept="{{ accept }}" {% if multiple %}multiple{% endif %}>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2">
+      {% for field in fields %}
+        <label class="block">
+          <span class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ field.label }}</span>
+          {% if field.type == "select" %}
+            <select name="{{ field.name }}" class="mt-2 w-full rounded-2xl border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900">
+              {% for value, label in field.options %}
+                <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <input type="{{ field.type }}" name="{{ field.name }}" value="{{ field.value }}" min="{{ field.min }}" max="{{ field.max }}" class="mt-2 w-full rounded-2xl border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900">
+          {% endif %}
+        </label>
+      {% endfor %}
+    </div>
+    <button class="mt-6 w-full rounded-2xl bg-gradient-to-r from-coral to-aqua px-6 py-4 font-black text-white shadow-glow hover:brightness-105" type="submit">{{ button }}</button>
+  </form>
+</section>
+{% endblock %}

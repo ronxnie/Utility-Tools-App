@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(0, 167, 181, .18), transparent 28rem),
+    radial-gradient(circle at 88% 8%, rgba(255, 107, 90, .18), transparent 26rem),
+    linear-gradient(135deg, #f8fafc 0%, #eef7f8 48%, #fff7f2 100%);
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at 15% 12%, rgba(0, 167, 181, .18), transparent 28rem),
+    radial-gradient(circle at 85% 8%, rgba(255, 107, 90, .14), transparent 26rem),
+    linear-gradient(135deg, #08111f 0%, #0f172a 55%, #17112a 100%);
+}
+
+.tool-card {
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 70px rgba(16, 24, 40, .16);
+}
+
+.animated-gradient {
+  background-size: 180% 180%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}

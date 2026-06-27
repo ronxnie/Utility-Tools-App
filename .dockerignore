@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+.git/
+instance/uploads/*
+instance/outputs/*
+*.log

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="mx-auto max-w-3xl">
+  <a href="{{ url_for('main.index') }}" class="text-sm font-bold text-aqua">← Dashboard</a>
+  <h1 class="mt-3 text-4xl font-black">{{ title }}</h1>
+  <form method="post" class="mt-6 rounded-3xl border border-white/40 bg-white/85 p-6 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+    <label class="font-bold">Birth Date</label>
+    <input required type="date" name="birth_date" value="{{ birth_date }}" class="mt-2 w-full rounded-2xl border-slate-200 dark:border-white/10 dark:bg-slate-900">
+    <button class="mt-5 rounded-2xl bg-coral px-6 py-3 font-black text-white" type="submit">Calculate Age</button>
+    {% if result %}
+      <div class="mt-6 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-2xl bg-slate-100 p-5 dark:bg-white/10"><div class="text-3xl font-black">{{ result.years }}</div><div class="font-bold text-slate-500">Years</div></div>
+        <div class="rounded-2xl bg-slate-100 p-5 dark:bg-white/10"><div class="text-3xl font-black">{{ result.months }}</div><div class="font-bold text-slate-500">Months</div></div>
+        <div class="rounded-2xl bg-slate-100 p-5 dark:bg-white/10"><div class="text-3xl font-black">{{ result.days }}</div><div class="font-bold text-slate-500">Days</div></div>
+      </div>
+    {% endif %}
+  </form>
+</section>
+{% endblock %}

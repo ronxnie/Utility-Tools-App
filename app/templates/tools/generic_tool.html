@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="mx-auto max-w-5xl">
+  <a href="{{ url_for('main.index') }}" class="text-sm font-bold text-aqua">← Dashboard</a>
+  <div class="mt-3 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-sm font-black uppercase tracking-wide text-coral">{{ tool.category }}</p>
+      <h1 class="text-4xl font-black">{{ title }}</h1>
+    </div>
+    <span class="rounded-full bg-white px-4 py-2 text-xs font-black uppercase text-slate-500 shadow-sm dark:bg-white/10">
+      {% if tool.implemented %}Interactive{% else %}Roadmap Ready{% endif %}
+    </span>
+  </div>
+
+  <div class="mt-6 grid gap-5 lg:grid-cols-[1fr_340px]">
+    <form method="post" class="rounded-3xl border border-white/40 bg-white/85 p-6 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+      {% if tool.kind in ["text-analyzer", "summarizer", "xml", "regex", "minifier"] %}
+        {% if tool.kind == "regex" %}
+          <label class="font-bold">Regex Pattern</label>
+          <input name="pattern" class="mt-2 w-full rounded-2xl dark:bg-slate-900" placeholder="\b[A-Z]\w+">
+        {% endif %}
+        <label class="mt-4 block font-bold">Input</label>
+        <textarea name="text" rows="10" class="mt-2 w-full rounded-2xl border-slate-200 bg-white p-4 font-mono text-sm dark:border-white/10 dark:bg-slate-900"></textarea>
+      {% elif tool.kind == "diff" %}
+        <div class="grid gap-4 md:grid-cols-2">
+          <textarea name="left" rows="12" class="rounded-2xl dark:bg-slate-900" placeholder="Original text"></textarea>
+          <textarea name="right" rows="12" class="rounded-2xl dark:bg-slate-900" placeholder="Changed text"></textarea>
+        </div>
+      {% elif tool.kind == "lorem" %}
+        <label class="font-bold">Paragraphs</label>
+        <input name="count" type="number" min="1" max="20" value="3" class="mt-2 w-full rounded-2xl dark:bg-slate-900">
+      {% elif tool.kind == "calculator" %}
+        <label class="font-bold">Expression</label>
+        <input name="expression" value="sin(pi / 2) + 25 * 4" class="mt-2 w-full rounded-2xl dark:bg-slate-900">
+      {% elif tool.kind == "sip" %}
+        <div class="grid gap-4 md:grid-cols-3">
+          <input name="monthly" type="number" value="5000" class="rounded-2xl dark:bg-slate-900" placeholder="Monthly SIP">
+          <input name="rate" type="number" step="0.01" value="12" class="rounded-2xl dark:bg-slate-900" placeholder="Annual %">
+          <input name="months" type="number" value="120" class="rounded-2xl dark:bg-slate-900" placeholder="Months">
+        </div>
+      {% elif tool.kind in ["gst", "percentage"] %}
+        <div class="grid gap-4 md:grid-cols-2">
+          <input name="{% if tool.kind == 'gst' %}amount{% else %}part{% endif %}" type="number" value="1000" class="rounded-2xl dark:bg-slate-900" placeholder="Amount">
+          <input name="{% if tool.kind == 'gst' %}rate{% else %}whole{% endif %}" type="number" value="{% if tool.kind == 'gst' %}18{% else %}200{% endif %}" class="rounded-2xl dark:bg-slate-900" placeholder="Rate or whole">
+        </div>
+      {% elif tool.kind == "fd" %}
+        <div class="grid gap-4 md:grid-cols-3">
+          <input name="principal" type="number" value="100000" class="rounded-2xl dark:bg-slate-900" placeholder="Principal">
+          <input name="rate" type="number" step="0.01" value="7" class="rounded-2xl dark:bg-slate-900" placeholder="Annual %">
+          <input name="years" type="number" step="0.5" value="5" class="rounded-2xl dark:bg-slate-900" placeholder="Years">
+        </div>
+      {% elif tool.kind == "unit" %}
+        <div class="grid gap-4 md:grid-cols-2">
+          <input name="value" type="number" step="0.01" value="1" class="rounded-2xl dark:bg-slate-900">
+          <select name="mode" class="rounded-2xl dark:bg-slate-900"><option value="km-mi">Kilometers to Miles</option><option value="mi-km">Miles to Kilometers</option><option value="kg-lb">Kilograms to Pounds</option><option value="lb-kg">Pounds to Kilograms</option></select>
+        </div>
+      {% elif tool.kind == "date" %}
+        <div class="grid gap-4 md:grid-cols-2">
+          <input name="start" type="date" required class="rounded-2xl dark:bg-slate-900">
+          <input name="days" type="number" value="30" class="rounded-2xl dark:bg-slate-900" placeholder="Days to add">
+        </div>
+      {% elif tool.kind in ["password", "password-strength"] %}
+        {% if tool.kind == "password" %}
+          <label class="font-bold">Length</label>
+          <input name="length" type="number" min="8" max="64" value="16" class="mt-2 w-full rounded-2xl dark:bg-slate-900">
+        {% else %}
+          <label class="font-bold">Password</label>
+          <input name="password" type="password" class="mt-2 w-full rounded-2xl dark:bg-slate-900">
+        {% endif %}
+      {% elif tool.kind in ["hashtags", "captions", "youtube-thumb", "qr", "color", "color-converter"] %}
+        <label class="font-bold">{% if tool.kind == "youtube-thumb" %}YouTube URL or Video ID{% elif tool.kind == "color" %}Pick Color{% elif tool.kind == "color-converter" %}HEX or RGB Value{% else %}Prompt / Value{% endif %}</label>
+        <input name="{% if tool.kind == 'youtube-thumb' %}video_id{% elif tool.kind == 'color' or tool.kind == 'color-converter' %}color{% else %}topic{% endif %}" type="{% if tool.kind == 'color' %}color{% else %}text{% endif %}" value="{% if tool.kind == 'color' %}#00A7B5{% endif %}" class="mt-2 w-full rounded-2xl dark:bg-slate-900">
+      {% elif tool.kind == "productivity" %}
+        <div class="rounded-2xl bg-slate-100 p-4 dark:bg-white/10">
+          <p class="font-bold">Browser productivity workspace</p>
+          <textarea rows="8" class="mt-3 w-full rounded-2xl dark:bg-slate-900" placeholder="Use this space for notes, tasks, habits, or mind-map ideas."></textarea>
+        </div>
+      {% else %}
+        <div class="rounded-2xl bg-slate-100 p-5 dark:bg-white/10">
+          <p class="font-bold">Dedicated page created</p>
+          <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">This tool is listed and routed. Backend implementation should be connected to the right engine, such as OCR, FFmpeg, LibreOffice, RAR extraction, AI model APIs, or a safe downloader service.</p>
+        </div>
+      {% endif %}
+
+      <button class="mt-5 rounded-2xl bg-gradient-to-r from-coral to-aqua px-6 py-3 font-black text-white shadow-glow" type="submit">
+        {% if tool.kind == "planned" %}Show Setup Plan{% else %}Run Tool{% endif %}
+      </button>
+    </form>
+
+    <aside class="rounded-3xl border border-white/40 bg-white/85 p-6 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+      <h2 class="text-xl font-black">Result</h2>
+      {% if error %}
+        <p class="mt-4 rounded-2xl bg-red-50 p-4 text-sm font-bold text-red-700 dark:bg-red-950/40 dark:text-red-200">{{ error }}</p>
+      {% elif result %}
+        {% if result.stats %}
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            {% for label, value in [("Words", result.stats.words), ("Chars", result.stats.characters), ("No Spaces", result.stats.characters_no_spaces), ("Sentences", result.stats.sentences)] %}
+              <div class="rounded-2xl bg-slate-100 p-4 dark:bg-white/10"><div class="text-2xl font-black">{{ value }}</div><div class="text-xs font-bold uppercase text-slate-500">{{ label }}</div></div>
+            {% endfor %}
+          </div>
+        {% elif result.matches %}
+          <pre class="mt-4 max-h-96 overflow-auto rounded-2xl bg-slate-950 p-4 text-xs text-limepop">{{ result.matches }}</pre>
+        {% elif result.strength %}
+          <div class="mt-4">
+            <div class="h-3 rounded-full bg-slate-200 dark:bg-white/10"><div class="h-3 rounded-full bg-aqua" style="width: {{ result.strength.percent }}%"></div></div>
+            <p class="mt-3 text-2xl font-black">{{ result.strength.label }}</p>
+          </div>
+        {% else %}
+          <pre class="mt-4 whitespace-pre-wrap break-words rounded-2xl bg-slate-950 p-4 text-sm text-limepop">{{ result.output }}</pre>
+        {% endif %}
+      {% else %}
+        <p class="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">
+          {% if tool.kind == "planned" %}
+            Click Show Setup Plan to see what backend integration this tool needs.
+          {% else %}
+            Submit the form to see output here. Fully local MVP tools run immediately; larger conversion, media, AI, or downloader tools are ready as dedicated pages for their service backends.
+          {% endif %}
+        </p>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+{% endblock %}
